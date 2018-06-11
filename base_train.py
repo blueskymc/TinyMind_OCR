@@ -24,7 +24,7 @@ class base_train():
         self.model = net
         self.selftest = selftest
         self.criterion = nn.CrossEntropyLoss()
-        self.optimizer = optim.Adam(net.parameters(), lr=1e-3, betas=(0.9, 0.999), weight_decay=0)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=1e-3, betas=(0.9, 0.999), weight_decay=0)
         if selftest:
             trainset = data_utils.TrainSetForSelftest(eval=False)
             self.trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True)
@@ -34,13 +34,13 @@ class base_train():
             trainset = data_utils.TrainSetForCompetition()
             self.trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True)
 
-    def train(self, checkpoint_path='checkpoints'):
+    def train(self, checkpoint_path):
         # 是否装载模型参数
         load = False
 
         if load:
             checkpoint = cp.load_checkpoint(address=checkpoint_path)
-            checkpoint.load_state_dict(checkpoint['state_dict'])
+            self.model.load_state_dict(checkpoint['state_dict'])
             start_epoch = checkpoint['epoch'] + 1
         else:
             start_epoch = 0

@@ -22,17 +22,17 @@ class base_eval():
         self.model = net
         self.testpath = test
         self.cuda_is_ok = False
-        net.eval()
+        self.model.eval()
         self.filename = os.listdir(test)
         words = os.listdir(train)  # 按时间排序 从早到晚
         self.words = np.array(words)
         self.testnumber = len(self.filename)
 
-    def eval(self, checkpoint_path='checkpoints'):
+    def eval(self, checkpoint_path):
         checkpoint = cp.load_checkpoint(address=checkpoint_path)
         self.model.load_state_dict(checkpoint['state_dict'])
 
-        test = data_utils.TestSet(self.testpath, self.img_size, self.channel)
+        test = data_utils.TestSet(self.testpath, self.img_size, self.channel == 3)
         testdatas = test.loadtestdata()
         testdatas.astype(np.float)
         n = 0
@@ -74,3 +74,4 @@ class base_eval():
 
         dataframe = pd.DataFrame({'filename': self.filename, 'label': predicts})
         dataframe.to_csv("test.csv", index=False, encoding='utf-8')
+        return self.filename, predicts

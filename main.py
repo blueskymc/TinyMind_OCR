@@ -10,6 +10,7 @@ import os
 import time
 
 from torch.backends import cudnn
+import cv2
 
 import models
 import base_train
@@ -56,11 +57,14 @@ def main():
                                           opt.channel, opt.testpath, opt.trainpath)
             test.eval(opt.checkpoint)
         elif opt.channel == 1:
-            test = base_eval.base_eval(models.net(), (opt.imgwidth, opt.imgheight),
+            test = base_eval.base_eval(models.model_channel_one(), (opt.imgwidth, opt.imgheight),
                                        opt.channel, opt.testpath, opt.trainpath)
-            # test = base_eval.base_eval(models.model_channel_one(), (opt.imgwidth, opt.imgheight),
-            #                               opt.channel, opt.testpath, opt.trainpath)
-            test.eval(opt.checkpoint)
+            files, predicts = test.eval(opt.checkpoint)
+            for file, predict in zip(files, predicts):
+                img = cv2.imread(opt.testpath + '\\' + file)
+                print(predict)
+                cv2.imshow(predict, img)
+                cv2.waitKey(0)
 
     elif opt.state == 'data':
         td = transfer_data(opt.trainpath, opt.imgwidth, opt.imgheight, opt.channel is 3)
