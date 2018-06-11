@@ -6,7 +6,7 @@
 import os
 import torch
 
-def save_checkpoint(state, address='checkpoint'):
+def save_checkpoint(state, address='checkpoints'):
     name = 'model_parameters.pth.tar'
 
     folder = os.path.exists(address)
@@ -17,7 +17,7 @@ def save_checkpoint(state, address='checkpoint'):
     torch.save(state, fulladress)
     print('model saved:', fulladress)
 
-def load_checkpoint(address='checkpoint'):
+def load_checkpoint(address='checkpoints'):
     name = 'model_parameters.pth.tar'
     fulladress = address + '\\' + name
     return torch.load(fulladress)

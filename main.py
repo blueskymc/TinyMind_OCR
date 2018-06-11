@@ -25,7 +25,7 @@ def main():
     parser.add_argument('--state', default='train', required=True, help='train or eval or data')
     parser.add_argument('--batch', default=256, type=int, help='batch size')
     parser.add_argument('--epoch', default=10, type=int, help='epoch count')
-    parser.add_argument('--checkpoint', default='checkpoint\\', help='模型存储位置')
+    parser.add_argument('--checkpoint', default='checkpoints\\', help='模型存储位置')
     parser.add_argument('--dropout', default=0.5, help='drop的概率')
     parser.add_argument('--channel', default=1, type=int, help='图片的通道数')
     parser.add_argument('--imgwidth', default=128, type=int, help='图片预处理后的宽度')
@@ -48,21 +48,24 @@ def main():
         elif opt.channel == 1:
             train = base_train.base_train(models.model_channel_one(), (opt.imgwidth, opt.imgheight),
                                           opt.channel, opt.epoch, opt.batch, opt.selftest)
-        train.train()
+        train.train(opt.checkpoint)
 
     elif opt.state == 'eval':
         if opt.channel == 3:
             test = vgg.eval_vgg16((opt.imgwidth, opt.imgheight),
                                           opt.channel, opt.testpath, opt.trainpath)
-            test.eval()
+            test.eval(opt.checkpoint)
         elif opt.channel == 1:
-            test = base_eval.base_eval(models.model_channel_one(), (opt.imgwidth, opt.imgheight),
-                                          opt.channel, opt.testpath, opt.trainpath)
-            test.eval()
+            test = base_eval.base_eval(models.net(), (opt.imgwidth, opt.imgheight),
+                                       opt.channel, opt.testpath, opt.trainpath)
+            # test = base_eval.base_eval(models.model_channel_one(), (opt.imgwidth, opt.imgheight),
+            #                               opt.channel, opt.testpath, opt.trainpath)
+            test.eval(opt.checkpoint)
 
     elif opt.state == 'data':
         td = transfer_data(opt.trainpath, opt.imgwidth, opt.imgheight, opt.channel is 3)
-        td.transData()
+        data, lable = td.transData()
+        td.save_npy(data, lable)
 
     else:
         print('Error state, must choose from train and eval!')

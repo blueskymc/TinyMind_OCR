@@ -34,7 +34,7 @@ class base_train():
             trainset = data_utils.TrainSetForCompetition()
             self.trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True)
 
-    def train(self, checkpoint_path='checkpoint'):
+    def train(self, checkpoint_path='checkpoints'):
         # 是否装载模型参数
         load = False
 

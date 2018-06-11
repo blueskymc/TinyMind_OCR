@@ -52,8 +52,11 @@ class transfer_data():
             datas = np.append(datas, data, axis=0)
             labels = np.append(labels, label, axis=0)
 
-        np.save('data\\data.npy', datas)
-        np.save('data\\label.npy', labels)
+        return datas, labels
+
+    def save_npy(self, data, lable):
+        np.save('data\\data.npy', data)
+        np.save('data\\label.npy', lable)
 
 class TrainSetForCompetition(data.Dataset):
     def __init__(self):
@@ -114,4 +117,28 @@ class TestSet(data.Dataset):
             img = cv2.resize(img, self.img_size)
             datas.append(img)
         datas = np.array(datas)
+        np.save('data\\data_test.npy', datas)
         return datas
+
+
+class TrainSetForSelftest(data.Dataset):
+    def __init__(self, eval):
+        datas = np.load('data\\data.npy')
+        labels = np.load('data\\label.npy')
+        index = np.arange(0, len(datas), 1, dtype=np.int)
+        np.random.seed(123)
+        np.random.shuffle(index)
+        if eval:
+            index = index[:int(len(datas) * 0.1)]
+        else:
+            index = index[int(len(datas) * 0.1):]
+        self.data = datas[index]
+        self.label = labels[index]
+        np.random.seed()
+
+    def __getitem__(self, index):
+        return torch.from_numpy(self.data[index]), \
+               torch.from_numpy(self.label[index])
+
+    def __len__(self):
+        return len(self.data)

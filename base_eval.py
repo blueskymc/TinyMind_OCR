@@ -11,6 +11,7 @@ import torch
 from torch.autograd import Variable
 import numpy as np
 from tqdm import tqdm
+import checkpoint as cp
 
 import data_utils
 
@@ -27,15 +28,15 @@ class base_eval():
         self.words = np.array(words)
         self.testnumber = len(self.filename)
 
-    def eval(self):
-        checkpoint = self.model.load_checkpoint()
+    def eval(self, checkpoint_path='checkpoints'):
+        checkpoint = cp.load_checkpoint(address=checkpoint_path)
         self.model.load_state_dict(checkpoint['state_dict'])
 
         test = data_utils.TestSet(self.testpath, self.img_size, self.channel)
         testdatas = test.loadtestdata()
         testdatas.astype(np.float)
         n = 0
-        N = 16343
+        N = 80
         batch_size = 8
         pre = np.array([])
         batch_site = []
