@@ -63,8 +63,6 @@ class TrainSetForCompetition(data.Dataset):
         datas = np.load('data\\data.npy')
         labels = np.load('data\\label.npy')
         index = np.arange(0, len(datas), 1, dtype=np.int)
-        np.random.seed(123)
-        np.random.shuffle(index)
         self.data = datas[index]
         self.label = labels[index]
         np.random.seed()

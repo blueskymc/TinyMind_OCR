@@ -36,7 +36,7 @@ class base_eval():
         testdatas = test.loadtestdata()
         testdatas.astype(np.float)
         n = 0
-        N = 80
+        N = 16343
         batch_size = 8
         pre = np.array([])
         batch_site = []
